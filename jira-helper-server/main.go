@@ -438,7 +438,7 @@ func findTopKSimilar(queryEmbedding []float32, k int) ([]SearchResult, error) {
 
 // endregion
 
-// buildContext builds the context text from the top items
+// build context text from the top items
 func buildContext(topItems []SearchResult) string {
 	var sb strings.Builder
 	for _, item := range topItems {
