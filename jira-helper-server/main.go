@@ -278,14 +278,21 @@ func getEmbedding(text string) ([]float32, error) {
 // Compute the `embeddings` embedding map using `getEmbedding` from the provided XML `items`
 func computeEmbeddings(items []Item) error {
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, 5) // Limit concurrent API calls
+
+	// semaphore pattern for limiting concurrency
+	// sem is a channel, using struct{} because it has 0 memory (only using channel for signalling)
+	sem := make(chan struct{}, 5)
 
 	for _, item := range items {
 		wg.Add(1)
+
+		// send signal to sem channel (occupy a slot in the semaphore)
+		// this will only work if sem has occupancy, otherwise it will block
 		sem <- struct{}{}
 		go func(it Item) {
-			defer wg.Done()
-			defer func() { <-sem }()
+			defer wg.Done()          // update wait group
+			defer func() { <-sem }() // receive from sem channel (release spot in semaphore)
+
 			content := it.Content()
 			hash := hashContent(content)
 
