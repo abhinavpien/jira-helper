@@ -51,6 +51,7 @@ func TestCosineSimilarity(t *testing.T) {
 		{[]float32{1, 0}, []float32{1, 0}, 1},
 		{[]float32{1, 0}, []float32{0, 1}, 0},
 		{[]float32{1, 2}, []float32{2, 4}, 1},
+		{[]float32{1, 0}, []float32{0, 2}, 0},
 	}
 
 	for _, test := range tests {
